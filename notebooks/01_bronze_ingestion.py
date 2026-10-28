@@ -15,7 +15,7 @@
 
 # MAGIC %md
 # MAGIC ## Config and helpers
-# MAGIC Shared names, readers and writers live in `_common`. Open it and read the readers: there is one per file shape.
+# MAGIC Shared configuration, file readers (one per file shape) and table writers live in `_common`.
 
 # COMMAND ----------
 

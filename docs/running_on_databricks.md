@@ -39,7 +39,7 @@ LIST '/Volumes/ndtdata/landing/files/';
 python data_generator/generate_ndt_landing.py
 ```
 
-Upload the contents of the generated `ndt_landing` folder (not the folder itself) into the `landing` folder of the container, keeping the sub-folders. The README and answer-key files in it can be left out.
+Upload the contents of the generated `ndt_landing` folder (not the folder itself) into the `landing` folder of the container, keeping the sub-folders. The README and known-issues files in it can be left out.
 
 ## 4. Import the repo
 

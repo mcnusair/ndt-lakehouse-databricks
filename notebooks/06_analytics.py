@@ -3,7 +3,7 @@
 # MAGIC # 06 Analytics on the gold layer
 # MAGIC
 # MAGIC Nine business questions answered with SQL on the star schema. The same queries are in `sql/analytics_queries.sql`.
-# MAGIC Use the table output or the chart button in Databricks to turn any of them into a visual for screenshots.
+# MAGIC Any result can be turned into a chart with the visualization button in Databricks.
 # MAGIC
 # MAGIC Run after notebook `05`.
 

@@ -165,7 +165,7 @@ EQUIP = [
     ("EQ-008", "Portable X-ray source 200kV", "RT", "XR200", D(2023, 7, 19), 365),
     ("EQ-009", "Portable X-ray source 300kV", "RT", "XR300", D(2023, 11, 6), 365),
 ]
-GAP_EQ, GAP_DAYS = "EQ-004", 45  # planted: calibration lapse
+GAP_EQ, GAP_DAYS = "EQ-004", 45  # injected on purpose: calibration lapse
 cycles = {}
 for eid, desc, m, pn, start, interval in EQUIP:
     cs, k = [], 0
@@ -326,7 +326,7 @@ for d, rws in by_date.items():
     write_csv(OUT / "ut-thickness-readings" / f"readings_{d.isoformat()}.csv",
               ["reading_id", "inspection_id", "point_ref", "thickness_mm", "nominal_mm", "probe_id"], rws)
 
-# ---- planted data problems (documented in ANSWER_KEY file)
+# ---- defects injected on purpose (documented in KNOWN_DATA_ISSUES.md)
 out = [dict(it["rec"]) for it in main]
 pool = list(range(len(out)))
 random.shuffle(pool)
@@ -452,15 +452,14 @@ calibration_lab, result.
 **inspectors.json**: inspector_id, name{{forename, surname}}, home_facility_id, employment_status,
 authorization{{number, max_en4179_level, expiry}}.
 
-## Warning
+## Known issues
 
-The files are deliberately imperfect, like real source data. Profile them yourself first.
-A list of what was planted is in `ANSWER_KEY_planted_issues.md`. Do not open it until you
-have written your own data quality checks.
+The files are deliberately imperfect, like real source data. The defects injected on purpose
+are listed in `KNOWN_DATA_ISSUES.md`, with the affected inspection IDs.
 """, encoding="utf-8")
 
-(OUT / "ANSWER_KEY_planted_issues.md").write_text(
-    "# Planted data problems (answer key)\n\nOpen this only after you have profiled the data yourself.\n\n"
+(OUT / "KNOWN_DATA_ISSUES.md").write_text(
+    "# Known data issues\n\nDefects injected on purpose into the synthetic data, with the affected inspection IDs.\n\n"
     + "\n".join([
         f"- **Exact duplicate lines** in inspections.json ({len(key['duplicate_lines'])}): {', '.join(key['duplicate_lines'])}",
         f"- **Result casing** inconsistent (PASS, pass, Pass, FAIL, fail, Fail) on about 12 percent of rows",

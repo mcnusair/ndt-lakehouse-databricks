@@ -15,7 +15,7 @@ from pyspark.sql.window import Window
 
 CATALOG = "ndtdata"                          # Unity Catalog catalog
 LANDING = "/Volumes/ndtdata/landing/files"   # external volume over the landing folder
-UT_DIR = "ut-thickness-readings"             # folder names exactly as in your volume
+UT_DIR = "ut-thickness-readings"             # folder names inside the landing volume
 CAL_DIR = "calibration-records"
 
 BRONZE = f"{CATALOG}.bronze"

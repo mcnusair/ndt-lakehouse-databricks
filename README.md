@@ -103,7 +103,6 @@ The local runner swaps Delta for Parquet and emulates `MERGE`, so Delta-specific
 
 ```
 notebooks/        pipeline notebooks 01 to 06 and the shared _common
-learning/         exercise version of the silver cleaning notebook, with the rules removed
 sql/              production star schema DDL and analytics queries
 data_generator/   reproducible synthetic data
 local/            local Spark runner

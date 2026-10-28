@@ -5,7 +5,7 @@
 # MAGIC The main fact source is where the data problems are. This notebook cleans what can be cleaned and sends
 # MAGIC the rest to a quarantine table with a reason, so no row disappears silently.
 # MAGIC
-# MAGIC The rules live in `clean_inspections` in `_common` (read it, it is the heart of the silver layer).
+# MAGIC The rules live in `clean_inspections` in `_common`, the core of the silver layer.
 # MAGIC This notebook runs it, writes the results, and shows what happened.
 # MAGIC
 # MAGIC Run order: `01` bronze, `02` silver reference data, then this notebook.
@@ -24,7 +24,7 @@ print("distinct inspection_id:", raw.select("inspection_id").distinct().count())
 
 # MAGIC %md
 # MAGIC ## Profile before cleaning
-# MAGIC These queries show the problems the rules deal with. Run them before reading the rules.
+# MAGIC These queries show the problems the rules deal with.
 
 # COMMAND ----------
 
