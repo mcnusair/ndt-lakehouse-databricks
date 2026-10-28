@@ -1,18 +1,15 @@
 # Databricks notebook source
-# /// script
-# [tool.databricks.environment]
-# environment_version = "6"
-# ///
 # MAGIC %md
 # MAGIC # 05 Gold: star schema
 # MAGIC
 # MAGIC Builds the dimensional model from silver: seven dimensions and `fact_inspections`.
 # MAGIC The column names and types follow `sql/ndt_star_schema.sql`.
 # MAGIC
-# MAGIC Design points:
+# MAGIC **Grain of the fact table:** one NDT inspection event.
 # MAGIC
+# MAGIC **Design points**
 # MAGIC - `dim_inspector` and `dim_equipment` are SCD Type 2. Each row is one version, valid for a date range.
-# MAGIC - The fact table stores the surrogate key of the version that was valid on the inspection date.
+# MAGIC - The fact table stores the **surrogate key of the version that was valid on the inspection date**.
 # MAGIC   That is what makes the data auditable: an old inspection keeps pointing at the inspector level and the
 # MAGIC   instrument calibration that applied at the time.
 # MAGIC - Equipment version windows run from one calibration to the day before the next. If a calibration was late,
@@ -21,6 +18,11 @@
 # MAGIC - Surrogate keys here are numbered with `row_number()` because the whole gold layer is rebuilt on every run.
 # MAGIC   On a long-lived warehouse table you would use `GENERATED ALWAYS AS IDENTITY` (see `sql/ndt_star_schema.sql`).
 # MAGIC
+# MAGIC Run after notebooks `01` to `04`.
+
+# COMMAND ----------
+
+# MAGIC %run ./_common
 
 # COMMAND ----------
 

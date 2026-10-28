@@ -1,13 +1,18 @@
 # Databricks notebook source
-# /// script
-# [tool.databricks.environment]
-# environment_version = "6"
-# ///
 # MAGIC %md
 # MAGIC # 03 Silver: inspections
 # MAGIC
 # MAGIC The main fact source is where the data problems are. This notebook cleans what can be cleaned and sends
 # MAGIC the rest to a quarantine table with a reason, so no row disappears silently.
+# MAGIC
+# MAGIC The rules live in `clean_inspections` in `_common`, the core of the silver layer.
+# MAGIC This notebook runs it, writes the results, and shows what happened.
+# MAGIC
+# MAGIC Run order: `01` bronze, `02` silver reference data, then this notebook.
+
+# COMMAND ----------
+
+# MAGIC %run ./_common
 
 # COMMAND ----------
 

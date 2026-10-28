@@ -1,19 +1,19 @@
 # Databricks notebook source
-# /// script
-# [tool.databricks.environment]
-# environment_version = "6"
-# ///
 # MAGIC %md
 # MAGIC # 02 Silver: reference and supporting data
 # MAGIC
 # MAGIC Cleans every bronze table except `inspections` (that one is notebook 03, because it needs rules and a quarantine).
 # MAGIC
-# MAGIC things the notebook does:
+# MAGIC **What silver does here**
 # MAGIC 1. Trims text and turns empty strings into real nulls.
 # MAGIC 2. Parses date strings into `DATE`.
 # MAGIC 3. Flattens nested structs and arrays.
 # MAGIC 4. Removes duplicate keys.
 # MAGIC 5. Drops the bronze audit columns, silver tables are the clean version of the business data.
+
+# COMMAND ----------
+
+# MAGIC %run ./_common
 
 # COMMAND ----------
 
