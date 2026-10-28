@@ -1,6 +1,3 @@
--- Analytics queries on the gold layer (same queries as notebooks/06_analytics.py)
--- Replace ndtdata with your catalog name.
-
 -- 1. Pass rate by NDT method
 SELECT m.method_name,
        COUNT(*)                                        AS inspections,
