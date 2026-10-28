@@ -1,9 +1,5 @@
-"""Generate synthetic aviation NDT landing files for the Databricks capstone.
+"""Generate synthetic aviation NDT landing files """
 
-Run from the folder where you want ./ndt_landing to appear:
-    python generate_ndt_landing.py
-Fixed seed, so the output is identical every run.
-"""
 import csv
 import datetime as dt
 import json
