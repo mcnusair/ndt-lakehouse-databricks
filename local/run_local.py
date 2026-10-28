@@ -1,18 +1,14 @@
-"""Run the Databricks notebooks on a local Spark session. No Azure account needed.
+"""Run the Databricks notebooks on a local Spark session without an Azure account
 
     python data_generator/generate_ndt_landing.py     # creates ./ndt_landing
     python local/run_local.py                          # runs notebooks 01 to 06
 
-What this runner changes so the notebooks work on a laptop:
   * paths: the landing volume becomes the local ./ndt_landing folder
   * names: catalog.schema.table becomes schema.table (plain Spark has no Unity Catalog)
   * format: Delta tables become Parquet tables (Delta needs jars that are downloaded from Maven)
   * MERGE INTO is emulated with DataFrame operations (same result for the two MERGE shapes used here)
   * dbutils.fs.ls and display() are small stand-ins
-Spark runs with ANSI mode on, like Databricks serverless, so strict-mode errors show up here too.
 
-Limits: Delta features (time travel, MERGE internals, transaction log) are not exercised locally.
-The first run on a real Databricks workspace is what tests those.
 """
 import argparse
 import os
