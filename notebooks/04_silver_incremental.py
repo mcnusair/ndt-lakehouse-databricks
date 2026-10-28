@@ -1,11 +1,15 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # 04 Silver: incremental loads
 # MAGIC
 # MAGIC January 2025 arrives as weekly folders: `incremental/2025-01-06`, `2025-01-13`, `2025-01-20`.
 # MAGIC Each folder has an `inspections.json` and a `findings.json`.
 # MAGIC
-# MAGIC **How it works**
+# MAGIC Notebook steps:
 # MAGIC 1. Find the folders that have not been loaded yet. The bronze table remembers every `file_date` it has seen,
 # MAGIC    so running this notebook twice does nothing the second time.
 # MAGIC 2. Append the raw batch to bronze, with its `file_date`.
@@ -14,14 +18,6 @@
 # MAGIC 5. Rows that were quarantined by the full load and now arrive corrected are removed from quarantine.
 # MAGIC 6. Rows that fail the rules this time are appended to quarantine.
 # MAGIC
-# MAGIC The 2025-01-13 batch corrects two inspections that had a negative duration in the full load.
-# MAGIC The 2025-01-20 batch re-sends a record that was already delivered, unchanged. The `MERGE` must handle both.
-# MAGIC
-# MAGIC Run after notebooks `01` to `03`.
-
-# COMMAND ----------
-
-# MAGIC %run ./_common
 
 # COMMAND ----------
 

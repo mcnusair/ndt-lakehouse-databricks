@@ -1,25 +1,18 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # 01 Bronze ingestion
 # MAGIC
 # MAGIC Reads every raw file from the landing volume and writes it to a managed Delta table in `bronze`.
 # MAGIC
-# MAGIC **Bronze rules used here**
-# MAGIC 1. Explicit schemas, never inference.
-# MAGIC 2. Keep the data raw. No cleaning, no renaming. Dates stay as strings because the source mixes formats.
-# MAGIC 3. Add audit columns: `ingestion_ts` and `source_file`.
-# MAGIC 4. Rows Spark cannot parse are kept in `_corrupt_record` instead of being dropped.
-# MAGIC 5. Full overwrite, so the notebook can be re-run safely.
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Config and helpers
-# MAGIC Shared configuration, file readers (one per file shape) and table writers live in `_common`.
-
-# COMMAND ----------
-
-# MAGIC %run ./_common
+# MAGIC notes:
+# MAGIC 1. Explicit schemas.
+# MAGIC 2. Added audit columns: `ingestion_ts` and `source_file`.
+# MAGIC 3. Rows Spark cannot parse are kept in `_corrupt_record` .
+# MAGIC
 
 # COMMAND ----------
 

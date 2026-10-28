@@ -1,15 +1,15 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 # MAGIC %md
 # MAGIC # 06 Analytics on the gold layer
 # MAGIC
 # MAGIC Nine business questions answered with SQL on the star schema. The same queries are in `sql/analytics_queries.sql`.
 # MAGIC Any result can be turned into a chart with the visualization button in Databricks.
 # MAGIC
-# MAGIC Run after notebook `05`.
-
-# COMMAND ----------
-
-# MAGIC %run ./_common
+# MAGIC
 
 # COMMAND ----------
 
