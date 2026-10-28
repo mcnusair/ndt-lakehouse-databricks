@@ -1,8 +1,8 @@
 -- NDT Inspection Star Schema
 -- Databricks SQL / Spark SQL compatible
 -- Description: Dimensional model for aviation NDT inspection data
---   covering inspectors, components, equipment, work orders,
---   facilities, methods, and inspection outcomes.
+--              covering inspectors, components, equipment, work orders,
+--              facilities, methods, and inspection outcomes.
 
 
 
