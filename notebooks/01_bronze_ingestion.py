@@ -104,13 +104,13 @@ write_bronze(read_json_multiline(f"{LANDING}/findings.json", FINDINGS_SCHEMA), "
 readings = read_csv(f"{LANDING}/{UT_DIR}/", """
     reading_id STRING, inspection_id STRING, point_ref STRING,
     thickness_mm DOUBLE, nominal_mm DOUBLE, probe_id STRING
-""")
+""", glob="*.csv")
 write_bronze(readings, "ut_thickness_readings")
 
 calibration = read_json_multiline(f"{LANDING}/{CAL_DIR}/", """
     certificate_no STRING, equipment_id STRING, calibrated_on STRING,
     calibration_due STRING, calibration_lab STRING, result STRING
-""")
+""", glob="*.json")
 write_bronze(calibration, "calibration_records")
 
 # COMMAND ----------

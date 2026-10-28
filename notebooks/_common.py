@@ -52,10 +52,16 @@ def parse_date(c):
 
 # COMMAND ----------
 
-def read_csv(path, schema):
-    """CSV with header. The source marks missing values as \\N."""
-    return (spark.read.option("header", True).option("nullValue", "\\N")
-            .schema(schema).csv(path))
+def read_csv(path, schema, glob=None):
+    """CSV with header. The source marks missing values as \\N.
+
+    glob: when reading a whole folder, only pick files matching this pattern (for example "*.csv"),
+    so stray files such as Windows ':Zone.Identifier' leftovers are ignored.
+    """
+    reader = spark.read.option("header", True).option("nullValue", "\\N").schema(schema)
+    if glob:
+        reader = reader.option("pathGlobFilter", glob)
+    return reader.csv(path)
 
 
 def read_jsonl(path, schema):
@@ -63,9 +69,12 @@ def read_jsonl(path, schema):
     return spark.read.option("mode", "PERMISSIVE").schema(schema).json(path)
 
 
-def read_json_multiline(path, schema):
-    """Pretty-printed JSON where each file holds an array of objects."""
-    return spark.read.option("multiLine", True).schema(schema).json(path)
+def read_json_multiline(path, schema, glob=None):
+    """Pretty-printed JSON where each file holds an array of objects. See read_csv for glob."""
+    reader = spark.read.option("multiLine", True).schema(schema)
+    if glob:
+        reader = reader.option("pathGlobFilter", glob)
+    return reader.json(path)
 
 
 def add_audit(df):
