@@ -2,7 +2,7 @@
 
 A medallion pipeline that turns messy aviation Non-Destructive Testing (NDT) inspection records into an audit-ready star schema. It runs on Azure Databricks with Unity Catalog and Delta Lake, and it also runs on a laptop with plain Spark so anyone can try it without a cloud account.
 
-The data is synthetic but built to behave like real MRO records: mixed file formats, duplicates, inconsistent casing, orphan keys, instruments that went out of calibration, and inspectors who were promoted during the period. The star schema is the one designed in [ndt-data-model] (https://github.com/mcnusair/aviation_ndt_data_model).
+The data is synthetic but built to behave like real MRO records: mixed file formats, duplicates, inconsistent casing, orphan keys, instruments that went out of calibration, and inspectors who were promoted during the period. The star schema is the one designed in (https://github.com/mcnusair/aviation_ndt_data_model).
 
 ## Why this project
 
