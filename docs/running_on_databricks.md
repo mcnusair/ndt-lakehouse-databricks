@@ -9,8 +9,8 @@ see the local runner in the README.
 
 1. **Access Connector for Azure Databricks** with a system-assigned managed identity. Copy its resource ID.
 2. **Storage account** (Standard, LRS) with **hierarchical namespace enabled**. Add a container and a `landing` folder.
-3. **Role assignment** on the storage account: `Storage Blob Data Contributor`, assigned to the access connector's managed identity. Wait a few minutes for it to take effect.
-
+3. **Role assignment** on the storage account: `Storage Blob Data Contributor`, assigned to the access connector's managed identity.
+   
 ## 2. Unity Catalog objects
 
 In Catalog Explorer, create a storage credential from the access connector, then an external location for the container. The external location must exist before the catalog that uses it.
