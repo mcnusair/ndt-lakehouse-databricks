@@ -2,11 +2,9 @@
 # MAGIC %md
 # MAGIC # _common: shared config and helpers
 # MAGIC
-# MAGIC Every pipeline notebook starts with `%run ./_common`. Change the two names below once, and the whole
-# MAGIC project follows.
+# MAGIC Every pipeline notebook starts with %run ./_common. The names in the config cell are the only things to change if your catalog or volume is called something else.
 # MAGIC
-# MAGIC Contents: config, text and date helpers, file readers, table writers, the column list for inspections,
-# MAGIC and `clean_inspections`, the function that holds all the silver validation rules.
+# MAGIC This file holds the config, the text and date helpers, the file readers, the table writers, the column lists for inspections, and clean_inspections, the function with all the silver validation rules.
 
 # COMMAND ----------
 
@@ -143,23 +141,12 @@ def explode_findings(df):
               .dropDuplicates(["finding_id", "indication_no"]))
 
 # COMMAND ----------
-
 # MAGIC %md
 # MAGIC ## Silver validation rules for inspections
 # MAGIC
-# MAGIC `clean_inspections(raw)` takes bronze inspection rows and returns two DataFrames: `valid` and `quarantine`.
+# MAGIC clean_inspections takes bronze inspection rows and returns two DataFrames, valid and quarantine. It works in six steps. It normalises first: text is trimmed, empty strings become null, both date formats are parsed and the result is upper-cased. Then it deduplicates, keeping one row per inspection_id with the most recently ingested one winning. It repairs only what is certain, so a clean inspection (0 indications) with a null size gets size 0 and nothing else is guessed. Next it checks every foreign key with a true or false flag, using left joins against the silver dimensions, and validates each rule, adding every broken one to a reasons array so one row can have several. The last step splits the rows: no reasons means valid, any reason means quarantine, with the reasons joined into text.
 # MAGIC
-# MAGIC | Step | What it does |
-# MAGIC | --- | --- |
-# MAGIC | Normalise | Trim text, empty string to null, parse both date formats, upper-case the result |
-# MAGIC | Deduplicate | One row per `inspection_id`, the most recently ingested wins |
-# MAGIC | Repair | A clean inspection (0 indications) with null size gets size 0. Nothing else is guessed |
-# MAGIC | Check keys | A True/False flag per foreign key, using left joins against the silver dimensions |
-# MAGIC | Validate | Every broken rule is added to a `reasons` array, so one row can have several |
-# MAGIC | Split | No reasons means valid. Any reason means quarantine, with the reasons joined into text |
-# MAGIC
-# MAGIC PT and VT inspections legitimately have no equipment (they use consumables), so a missing
-# MAGIC `equipment_id` is only an error for UT, ET, MT and RT.
+# MAGIC PT and VT inspections legitimately have no equipment, because they use consumables, so a missing equipment_id is only an error for UT, ET, MT and RT.
 
 # COMMAND ----------
 

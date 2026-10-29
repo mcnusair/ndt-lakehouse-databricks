@@ -2,14 +2,11 @@
 # MAGIC %md
 # MAGIC # 02 Silver: reference and supporting data
 # MAGIC
-# MAGIC Cleans every bronze table except `inspections` (that one is notebook 03, because it needs rules and a quarantine).
+# MAGIC This notebook cleans every bronze table except inspections. Inspections get their own notebook (03) because they need validation rules and a quarantine table.
 # MAGIC
-# MAGIC **What silver does here**
-# MAGIC 1. Trims text and turns empty strings into real nulls.
-# MAGIC 2. Parses date strings into `DATE`.
-# MAGIC 3. Flattens nested structs and arrays.
-# MAGIC 4. Removes duplicate keys.
-# MAGIC 5. Drops the bronze audit columns, silver tables are the clean version of the business data.
+# MAGIC For these tables, silver means a few simple things. Text is trimmed and empty strings become real nulls, date
+# MAGIC strings become dates, nested structs and arrays are flattened, and duplicate keys are removed. The bronze audit
+# MAGIC columns are dropped, since silver is the clean version of the business data.
 
 # COMMAND ----------
 
@@ -93,7 +90,7 @@ write_silver(
 
 # MAGIC %md
 # MAGIC ## Inspectors and certification history
-# MAGIC The nested `name` and `authorization` structs are flattened with dot notation.
+# MAGIC The nested name and authorization structs are flattened with dot notation.
 # MAGIC These two feed the SCD2 inspector dimension in gold.
 
 # COMMAND ----------
@@ -122,7 +119,7 @@ write_silver(
 
 # MAGIC %md
 # MAGIC ## Findings: one row per indication
-# MAGIC Bronze holds one row per inspection with an array inside. `explode` turns each array element into its own row.
+# MAGIC Bronze holds one row per inspection with an array inside. explode turns each array element into its own row.
 
 # COMMAND ----------
 
@@ -133,7 +130,7 @@ write_silver(findings, "findings")
 
 # MAGIC %md
 # MAGIC ## UT thickness readings
-# MAGIC The reading date lives only in the file name, so we pull it out of `source_file`.
+# MAGIC The reading date lives only in the file name, so I pull it out of source_file.
 
 # COMMAND ----------
 

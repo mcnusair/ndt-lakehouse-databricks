@@ -2,20 +2,19 @@
 # MAGIC %md
 # MAGIC # 01 Bronze ingestion
 # MAGIC
-# MAGIC Reads every raw file from the landing volume and writes it to a managed Delta table in `bronze`.
+# MAGIC This notebook reads every raw file from the landing volume and writes one Delta table per source into bronze.
 # MAGIC
-# MAGIC **Bronze rules used here**
-# MAGIC 1. Explicit schemas, never inference.
-# MAGIC 2. Keep the data raw. No cleaning, no renaming. Dates stay as strings because the source mixes formats.
-# MAGIC 3. Add audit columns: `ingestion_ts` and `source_file`.
-# MAGIC 4. Rows Spark cannot parse are kept in `_corrupt_record` instead of being dropped.
-# MAGIC 5. Full overwrite, so the notebook can be re-run safely.
+# MAGIC Bronze is meant to be a faithful copy, so I do as little as possible here. Schemas are written out by hand
+# MAGIC instead of inferred. Nothing is cleaned or renamed, and dates stay as strings because the source mixes two
+# MAGIC formats. Each table gets an ingestion timestamp and the name of the file every row came from. A line that
+# MAGIC Spark cannot parse is kept in _corrupt_record instead of disappearing. The notebook overwrites its tables,
+# MAGIC so running it twice gives the same result.
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ## Config and helpers
-# MAGIC Shared configuration, file readers (one per file shape) and table writers live in `_common`.
+# MAGIC Shared configuration, file readers (one per file shape) and table writers live in _common.
 
 # COMMAND ----------
 
@@ -51,7 +50,7 @@ write_bronze(read_csv(f"{LANDING}/certification_history.csv", """
 
 # MAGIC %md
 # MAGIC ## Reference data (JSON lines)
-# MAGIC `inspectors` has nested structs. We keep them nested in bronze and flatten in silver.
+# MAGIC inspectors has nested structs. We keep them nested in bronze and flatten in silver.
 
 # COMMAND ----------
 
@@ -77,7 +76,7 @@ write_bronze(read_jsonl(f"{LANDING}/inspectors.json", """
 
 # MAGIC %md
 # MAGIC ## Main fact source: inspections
-# MAGIC `inspection_date` stays a string (mixed formats), `equipment_id` can be null or empty.
+# MAGIC inspection_date stays a string (mixed formats), equipment_id can be null or empty.
 
 # COMMAND ----------
 
@@ -117,7 +116,7 @@ write_bronze(calibration, "calibration_records")
 
 # MAGIC %md
 # MAGIC ## Sanity checks
-# MAGIC Row counts must match the files. Any `_corrupt_record` value means a line failed to parse.
+# MAGIC Row counts must match the files. Any _corrupt_record value means a line failed to parse.
 
 # COMMAND ----------
 

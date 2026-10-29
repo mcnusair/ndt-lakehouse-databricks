@@ -2,13 +2,9 @@
 # MAGIC %md
 # MAGIC # 03 Silver: inspections
 # MAGIC
-# MAGIC The main fact source is where the data problems are. This notebook cleans what can be cleaned and sends
-# MAGIC the rest to a quarantine table with a reason, so no row disappears silently.
+# MAGIC The inspections file is where most of the data problems are. This notebook cleans what can safely be cleaned and sends the rest to a quarantine table with a reason, so no row disappears silently.
 # MAGIC
-# MAGIC The rules live in `clean_inspections` in `_common`, the core of the silver layer.
-# MAGIC This notebook runs it, writes the results, and shows what happened.
-# MAGIC
-# MAGIC Run order: `01` bronze, `02` silver reference data, then this notebook.
+# MAGIC The rules live in clean_inspections in _common. This notebook runs that function, writes the results and shows what happened. Run notebooks 01 and 02 first.
 
 # COMMAND ----------
 

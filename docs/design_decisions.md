@@ -1,31 +1,41 @@
 # Design decisions
 
-Short notes on why the pipeline is built the way it is.
+Notes on why I built the pipeline this way, including a few things I changed my mind about.
 
-**Explicit schemas in bronze.** Schema inference reads data to guess types and breaks silently when a file changes. Explicit schemas make the contract visible, and `_corrupt_record` catches lines that do not match.
+## Bronze
 
-**Dates stay strings in bronze.** The source mixes `yyyy-MM-dd` and `dd/MM/yyyy`. Bronze is the raw copy, so parsing happens in silver where a failure can be quarantined instead of lost.
+I use explicit schemas. Inference reads the data to guess types, and it breaks quietly when a file changes. With a written schema the contract is visible, and anything that does not match ends up in _corrupt_record.
 
-**Quarantine instead of dropping.** A row with a negative duration or an unknown component cannot go to gold, but losing it would hide a real problem. Each rejected row keeps its reasons as text, and a row can break several rules at once. The count is a data quality signal.
+Dates stay as strings. The source mixes yyyy-MM-dd and dd/MM/yyyy, and bronze is meant to be the raw copy. Parsing happens in silver, where a failure can be quarantined instead of lost.
 
-**Only repair what is certain.** A clean inspection with zero indications and a null size gets size 0. A null size with indications above zero is not guessed, it is quarantined.
+## Silver
 
-**Equipment is optional only for PT and VT.** Penetrant and visual testing use consumables, not calibrated instruments. For UT, ET, MT and RT a missing instrument is an error.
+Bad rows go to quarantine instead of being dropped. A row with a negative duration or an unknown component cannot reach gold, but throwing it away would hide a real problem. Each rejected row keeps its reasons as text, and a row can break several rules at once. The size of the quarantine table is a useful signal on its own.
 
-**SCD2 for inspectors and equipment.** An inspection must keep pointing at the inspector level and instrument calibration that applied on its date. The fact table stores the surrogate key of the version valid on that date, found by joining on the business key and the date window.
+I only repair what is certain. A clean inspection with zero indications and a null size gets a size of 0. A null size on an inspection with indications is not guessed, it is quarantined.
 
-**Equipment version windows run from one calibration to the day before the next.** If a calibration is late, the days in the gap stay with the old version, so the lookup still succeeds. The overdue inspections are then found by comparing the inspection date with `calibration_due`. A design where the gap has no version would lose those inspections from the fact table.
+Equipment is optional only for PT and VT. Penetrant and visual testing use consumables, not calibrated instruments. For UT, ET, MT and RT a missing instrument is an error.
 
-**Only calibration cycles that have started are loaded.** The source includes future cycles. Cycles that start after the latest inspection are left out so the newest loaded version is the current one.
+## Gold
 
-**Surrogate keys with `row_number()`.** Gold is rebuilt completely on each run, so deterministic numbering is enough and works in a DataFrame write. A long-lived warehouse table would use `GENERATED ALWAYS AS IDENTITY`, as in `sql/ndt_star_schema.sql`.
+Inspectors and equipment are SCD Type 2. An inspection has to keep pointing at the inspector level and the instrument calibration that applied on its date. The fact table stores the surrogate key of the version valid on that date, found by joining on the business key and the date window.
 
-**Gold follows the designed model, not the source.** Source columns that the model does not hold (`aircraft_reg`, `opened_date`, `technique_family`, `ndt_approval_ref`, `home_facility_id`) stay in silver. Missing component serial numbers become `UNKNOWN` because the model declares that column NOT NULL.
+For equipment, a version runs from one calibration to the day before the next one. If a calibration is late, the days in the gap stay with the old version, so the lookup still works. The overdue inspections are then found by comparing the inspection date with calibration_due. If the gap had no version, those inspections would disappear from the fact table, and they are exactly the ones an auditor asks about.
 
-**Incremental loads by `file_date` and `MERGE`.** Each weekly folder is appended to bronze with its date. The notebook skips dates it has seen, so re-runs are safe. `MERGE` updates inspections that already exist, inserts new ones, and removes corrected rows from quarantine. The same validation function is used for full and incremental loads, so the rules cannot drift apart.
+Only calibration cycles that have already started are loaded. The source also lists future cycles, and I left out any that begin after the latest inspection so that the newest loaded version is the current one.
 
-**External volume for landing, managed tables for the rest.** Landing files come from outside tools and must survive if the volume is dropped. Bronze, silver and gold are managed Delta tables that Unity Catalog owns.
+Surrogate keys come from row_number(). Gold is rebuilt completely on each run, so deterministic numbering is enough and works with a DataFrame write. A warehouse table that lives for years would use GENERATED ALWAYS AS IDENTITY, as the DDL in sql/ndt_star_schema.sql does.
 
-**Shared code through `%run`.** Notebooks import `_common` with `%run`, which works the same in a Databricks Git folder and in the local runner.
+Gold follows the model I designed, not the source files. Source columns that the model does not hold (aircraft_reg, opened_date, technique_family, ndt_approval_ref, home_facility_id) stay in silver. Missing component serial numbers become UNKNOWN, because the model declares that column NOT NULL.
 
-**A local runner and a CI test.** The full pipeline runs on plain Spark in under a minute, so a change can be checked without a cluster. Delta-specific behaviour is not covered by that test.
+## Loading
+
+Incremental loads work by file date and MERGE. Each weekly folder is appended to bronze with its date, and the notebook skips dates it has already seen, so re-runs are safe. MERGE updates inspections that exist, inserts new ones, and removes corrected rows from quarantine. The same validation function runs for full and incremental loads.
+
+Landing is an external volume and everything else is a managed Delta table. Landing files come from outside tools and have to survive if the volume is dropped. Bronze, silver and gold are owned by Unity Catalog.
+
+## Code and testing
+
+The shared code lives in a _common notebook and is pulled in with %run. It works the same in a Databricks Git folder and in the local runner, and it keeps the validation rules in one place.
+
+There is a local runner and a CI test. The whole pipeline runs on plain Spark in under a minute, so I can check a change without a cluster. That test does not cover Delta-specific behaviour, so MERGE was only really tested on Databricks.

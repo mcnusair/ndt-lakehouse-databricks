@@ -2,10 +2,7 @@
 # MAGIC %md
 # MAGIC # 06 Analytics on the gold layer
 # MAGIC
-# MAGIC Nine business questions answered with SQL on the star schema. The same queries are in `sql/analytics_queries.sql`.
-# MAGIC Any result can be turned into a chart with the visualization button in Databricks.
-# MAGIC
-# MAGIC Run after notebook `05`.
+# MAGIC Nine business questions answered with SQL on the star schema. The same queries are in sql/analytics_queries.sql. Any result can be turned into a chart with the visualization button in Databricks. Run notebook 05 first.
 
 # COMMAND ----------
 
@@ -33,7 +30,7 @@ ORDER BY pass_rate_pct ASC
 
 # MAGIC %md
 # MAGIC ## 2. Inspector workload and pass rate, with the certification level held at the time
-# MAGIC Because `dim_inspector` is SCD2, an inspector who was promoted appears once per level.
+# MAGIC Because dim_inspector is SCD2, an inspector who was promoted appears once per level.
 
 # COMMAND ----------
 
@@ -111,7 +108,7 @@ ORDER BY d.year, d.quarter, inspections DESC
 
 # MAGIC %md
 # MAGIC ## 6. Compliance: inspections done with an instrument whose calibration had expired
-# MAGIC Joins each inspection to the equipment version it used and compares the inspection date with `calibration_due`.
+# MAGIC Joins each inspection to the equipment version it used and compares the inspection date with calibration_due.
 # MAGIC This is the audit question the SCD2 design exists to answer.
 
 # COMMAND ----------

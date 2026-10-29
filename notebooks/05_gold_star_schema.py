@@ -2,23 +2,13 @@
 # MAGIC %md
 # MAGIC # 05 Gold: star schema
 # MAGIC
-# MAGIC Builds the dimensional model from silver: seven dimensions and `fact_inspections`.
-# MAGIC The column names and types follow `sql/ndt_star_schema.sql`.
+# MAGIC This notebook builds the dimensional model from silver: seven dimensions and the fact table. Column names and types follow sql/ndt_star_schema.sql. The fact table has one row per NDT inspection.
 # MAGIC
-# MAGIC **Grain of the fact table:** one NDT inspection event.
+# MAGIC Inspectors and equipment are SCD Type 2, so each row is one version that is valid for a date range. The fact table stores the surrogate key of the version that was valid on the inspection date, which means an old inspection keeps pointing at the inspector level and the instrument calibration that applied at the time.
 # MAGIC
-# MAGIC **Design points**
-# MAGIC - `dim_inspector` and `dim_equipment` are SCD Type 2. Each row is one version, valid for a date range.
-# MAGIC - The fact table stores the **surrogate key of the version that was valid on the inspection date**.
-# MAGIC   That is what makes the data auditable: an old inspection keeps pointing at the inspector level and the
-# MAGIC   instrument calibration that applied at the time.
-# MAGIC - Equipment version windows run from one calibration to the day before the next. If a calibration was late,
-# MAGIC   the gap days belong to the previous version, and the inspection can then be flagged as out of calibration
-# MAGIC   by comparing its date with `calibration_due` (see notebook 06).
-# MAGIC - Surrogate keys here are numbered with `row_number()` because the whole gold layer is rebuilt on every run.
-# MAGIC   On a long-lived warehouse table you would use `GENERATED ALWAYS AS IDENTITY` (see `sql/ndt_star_schema.sql`).
+# MAGIC Equipment versions run from one calibration to the day before the next. If a calibration was late, the days in the gap belong to the previous version, and an inspection in that gap can be flagged by comparing its date with calibration_due (notebook 06 does this).
 # MAGIC
-# MAGIC Run after notebooks `01` to `04`.
+# MAGIC Surrogate keys come from row_number() because the whole gold layer is rebuilt on every run. A table that lives for years would use GENERATED ALWAYS AS IDENTITY instead, as in the DDL. Run notebooks 01 to 04 first.
 
 # COMMAND ----------
 
@@ -70,7 +60,7 @@ write_gold(dim_method, "dim_method")
 
 # MAGIC %md
 # MAGIC ## dim_inspector (SCD2)
-# MAGIC One row per certification version. The history comes from `certification_history`, the name from `inspectors`.
+# MAGIC One row per certification version. The history comes from certification_history, the name from inspectors.
 
 # COMMAND ----------
 
@@ -92,7 +82,7 @@ write_gold(dim_inspector, "dim_inspector")
 
 # MAGIC %md
 # MAGIC ## dim_equipment (SCD2)
-# MAGIC One row per calibration cycle. `valid_from` is the calibration date, `valid_to` is the day before the next
+# MAGIC One row per calibration cycle. valid_from is the calibration date, valid_to is the day before the next
 # MAGIC calibration. Only cycles that have started by the date of the latest inspection are included, so the last one
 # MAGIC is the current version.
 
@@ -122,8 +112,8 @@ write_gold(dim_equipment, "dim_equipment")
 
 # MAGIC %md
 # MAGIC ## fact_inspections
-# MAGIC For the two SCD2 dimensions the join is on the business key **and** the date window:
-# MAGIC `valid_from <= inspection_date <= valid_to` (an open `valid_to` means the version is still current).
+# MAGIC For the two SCD2 dimensions the join is on the business key and the date window:
+# MAGIC valid_from <= inspection_date <= valid_to (an open valid_to means the version is still current).
 
 # COMMAND ----------
 
