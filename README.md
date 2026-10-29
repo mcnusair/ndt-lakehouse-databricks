@@ -66,7 +66,7 @@ The data is synthetic, so these are only a check that the queries surface what I
 
 ## Screenshots from the Databricks run
 
-I ran everything on Azure Databricks as six notebooks in order.
+I ran everything on Azure Databricks as six notebooks in order. The screenshots below show an example of individual notebook run on Databricks, successful run of all notebooks in a Workflow/job, Gold layer tables in catalog and finally, an example of the results of an analytics query.
 
 ![Example of individual notebook run](docs/images/notebook_run1.png)
 ![All notebooks running in workflow/job](docs/images/successfull_workflow_run.png)
