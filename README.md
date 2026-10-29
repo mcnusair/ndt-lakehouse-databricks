@@ -68,8 +68,8 @@ The data is synthetic, so these are only a check that the queries surface what I
 
 I ran everything on Azure Databricks as six notebooks in order.
 
-![Bronze tables in Unity Catalog](docs/images/catalog_bronze.png)
-![Silver tables in Unity Catalog](docs/images/catalog_silver.png)
+![Example of individual notebook run](docs/images/notebook_run1.png)
+![All notebooks running in workflow/job](docs/images/successfull_workflow_run.png)
 ![Gold tables in Unity Catalog](docs/images/catalog_gold.png)
 ![Analytics results example](docs/images/analytics1.png)
 
