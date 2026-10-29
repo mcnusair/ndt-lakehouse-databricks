@@ -110,9 +110,3 @@ tests/            end-to-end test, run in CI
 docs/             architecture, design decisions, data quality, Databricks setup
 ```
 
-## Possible next steps
-
-- Model indications and thickness readings as two more fact tables, linked to the inspection.
-- Orchestrate with a Databricks Workflow and add alerting on the quarantine count.
-- Replace the full gold rebuild with incremental `MERGE` and identity columns.
-- Add a Databricks SQL dashboard on the gold layer.
