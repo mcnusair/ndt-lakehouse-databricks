@@ -1,5 +1,10 @@
 # Running the pipeline on Azure Databricks
 
+The pipeline was run end to end on Azure Databricks (Unity Catalog, serverless compute) in October 2026,
+as a Workflow with six notebook tasks. Screenshots of the run are in the `images` folder. A full run takes about
+an hour including setup and costs little on the smallest compute. To try it without an Azure account,
+see the local runner in the README.
+
 ## 1. Azure resources
 
 1. **Access Connector for Azure Databricks** with a system-assigned managed identity. Copy its resource ID.
