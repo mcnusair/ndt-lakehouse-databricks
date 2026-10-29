@@ -2,17 +2,13 @@
 
 ## 1. Azure resources
 
-Create these in one resource group and one region, so you can delete everything in one step later.
-
 1. **Access Connector for Azure Databricks** with a system-assigned managed identity. Copy its resource ID.
 2. **Storage account** (Standard, LRS) with **hierarchical namespace enabled**. Add a container and a `landing` folder.
 3. **Role assignment** on the storage account: `Storage Blob Data Contributor`, assigned to the access connector's managed identity. Wait a few minutes for it to take effect.
 
-You also need a Databricks workspace on the Premium tier with a Unity Catalog metastore attached.
-
 ## 2. Unity Catalog objects
 
-In Catalog Explorer, create a storage credential from the access connector, then an external location for the container. Order matters: the external location must exist before the catalog that uses it.
+In Catalog Explorer, create a storage credential from the access connector, then an external location for the container. The external location must exist before the catalog that uses it.
 
 ```sql
 CREATE CATALOG IF NOT EXISTS ndtdata
@@ -39,7 +35,8 @@ LIST '/Volumes/ndtdata/landing/files/';
 python data_generator/generate_ndt_landing.py
 ```
 
-Upload the contents of the generated `ndt_landing` folder (not the folder itself) into the `landing` folder of the container, keeping the sub-folders. The README and known-issues files in it can be left out.
+Upload the contents of the generated `ndt_landing` folder into the `landing` folder of the container, keeping the sub-folders. 
+
 
 ## 4. Import the repo
 
